@@ -107,7 +107,11 @@ The state of the A/C is unpredectable when the IR signal toggles the power of th
 
 <img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n04.jpg" alt="" width="401" height="297" class="alignnone wp-image-2815" />  <img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n01.jpg" alt="" width="400" height="296" class="alignnone wp-image-2816" />
 
-The sensor is a Zigbee contact sensor that works with Zigbee2MQTT server. I have set the Zigbee2MQTT to publish a message like this,
+The sensor is a Zigbee contact sensor that works with Zigbee2MQTT server. Any contact-sensor that is suported by Zigbee2MQTT can be used. The sensor in the photo is:
+
+https://ja.aliexpress.com/item/1005004779586263.html
+
+I have set the Zigbee2MQTT to publish a message like this,
 
 <pre>{"battery":100,"battery_low":false,"contact":true,"linkquality":138,"tamper":false,"voltage":3000}</pre>
  
