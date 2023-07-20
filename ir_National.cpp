@@ -1,8 +1,8 @@
 // National AC class for A75C219
-// https://diysmartmatter.com/wp-content/uploads/2023/02/daikinremo-scaled.jpg
+// https://diysmartmatter.com/wp-content/uploads/2022/12/National.jpg
 // based on the IRremoteESP8266 library: https://github.com/crankyoldgit/IRremoteESP8266
 // Supported functions are limitted to those of Apple HomeKit Heater/Cooler Accessory
-// i.e. power(on,off)/mode(heater,cooler)/fanspeed/temp are supported.
+// i.e. power(on,off)/mode(heater,cooler)/fanspeed/fanswing/temp are supported.
 
 #include "ir_National.h"
 #include "IRremoteESP8266.h"
@@ -60,15 +60,12 @@ void IRNational::send() {
   // Gap #2
   _irsend.sendRaw(gap, 2, kNationalFreq);
   
-
   if( _.Stay == 0 ) {
     currentState = !currentState; //toggle the current state
     _.Stay = 1; //do not toggle anymore
   }
 
 }
-
-
 
 /// Disable/enable swing.
 /// @param[in] on true, swing is on. false, swing is off.
@@ -97,9 +94,6 @@ void IRNational::setSwing(const bool enabled) {
   }//end of else
 }
 
-
-
-
 /// Prepare hex (0-9 and A-F) chars of the current internal state.
 /// @return PTR to the char.
 char* IRNational::toChars(void) {
@@ -117,7 +111,6 @@ char* IRNational::toChars(void) {
   result[kNationalStateLength * 2]='\0';
   return result;
 }
-
 
 /// Reset the internal state to a fixed known good state.
 // the state is: temp=28deg. power=off, mode=cool, fan=max, swing=no
@@ -150,8 +143,6 @@ void IRNational::setPower(const bool on) {
 /// @param[in] accuired power state by a Zigbee contact sensor 
 void IRNational::updateState(const bool newState) { currentState = newState; }
 
-
-
 /// Set the operating mode of the A/C.
 /// @param[in] desired_mode The desired operating mode.
 void IRNational::setMode(const uint8_t desired_mode) {
@@ -176,7 +167,6 @@ void IRNational::setTemp(const uint8_t desired) {
 /// Get the current temperature setting.
 /// @return The current setting for temp. in degrees celsius.
 uint8_t IRNational::getTemp(void) const { return _.Temp + 15; }
-
 
 /// Set the speed of the fan.
 /// @param[in] fan The desired setting.
