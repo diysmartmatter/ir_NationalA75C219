@@ -1,8 +1,8 @@
 // National AC class for A75C219
-// https://diysmartmatter.com/wp-content/uploads/2023/02/daikinremo-scaled.jpg
+// https://diysmartmatter.com/wp-content/uploads/2022/12/National.jpg
 // based on the IRremoteESP8266 library: https://github.com/crankyoldgit/IRremoteESP8266
 // Supported functions are limitted to those of Apple HomeKit Heater/Cooler Accessory
-// i.e. power(on,off)/mode(heater,cooler)/fanspeed/temp are supported.
+// i.e. power(on,off)/mode(heater,cooler)/fanspeed/fanswing/temp are supported.
 
 //#include "IRrecv.h"
 #include "IRremoteESP8266.h"
@@ -10,9 +10,7 @@
 #include <stdint.h>
 #include <string> //for max()
 
-
 // National Constants
-
 const uint8_t kNationalCool = 0b010; //cool mode 
 const uint8_t kNationalHeat = 0b100; //heat mode 
 const uint8_t kNationalAuto = 0b110; //auto mode 
@@ -41,7 +39,7 @@ union NationalProtocol{
     uint8_t Temp :4; //actual setting - 15
     uint8_t Fan  :4; //{1,2,3,Auto}={2,4,6,0xF}
     uint8_t Mode :3; //cool=2, heat=4
-    uint8_t Stay :1; //1=stay the AC power 0 = toggle the power
+    uint8_t Stay :1; //1=stay the AC power, 0 = toggle the power
     uint8_t      :4; //unknown 
     uint8_t Swing; //swing=4, no swing=0
     uint8_t Timer; //default = 0x36
