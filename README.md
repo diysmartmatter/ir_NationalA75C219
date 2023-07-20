@@ -105,7 +105,7 @@ that can be used by Apple HomeKit as a Heater/Cooler accessory.
 The state of the A/C is unpredectable when the IR signal toggles the power of the A/C. To detect actual state of the A/C power, a magnet-contact sensor is used to attache to the flap of the A/C.
 
 
-<img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n04.jpg" alt="" width="401" height="297" class="alignnone wp-image-2815" />  <img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n01.jpg" alt="" width="400" height="296" class="alignnone wp-image-2816" />
+<img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n05.jpg" alt="" width="401" height="297" class="alignnone wp-image-2815" />  <img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n01.jpg" alt="" width="400" height="296" class="alignnone wp-image-2816" />
 
 The sensor is a Zigbee contact sensor that works with Zigbee2MQTT server. Any contact-sensor that is suported by Zigbee2MQTT can be used. The sensor in the photo is:
 
