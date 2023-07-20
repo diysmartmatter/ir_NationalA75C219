@@ -1,5 +1,5 @@
 /* IRremoteESP8266 over MQTT */
-/* Aircon Smart Remocon for Ocha House. 2023 I. Siio */
+/* Aircon Smart Remocon for National A75C219. 2023 by diysmartmatter*/
 
 #include <Arduino.h>
 #include <ArduinoOTA.h>
