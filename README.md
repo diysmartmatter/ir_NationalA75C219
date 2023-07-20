@@ -26,7 +26,7 @@ By assigning { 875 micro-sec high, 875 low} to 0, and {875 high, 2625 low} to 1,
 0x00 0x00 0x36 0x36
 </pre>
 
-Apparently, 4 bytes of data is repeated 4 times for each. By changing mode, temp, fan settings, bits of the 4 bytes data should be assigned as follows.
+Apparently, data of 4 bytes, {0xfc, 0x02, 0x00, 0x36} are repeated 4 times for each. By changing mode, temp, fan settings, bits of the data of 4 bytes should be assigned as follows.
 
 <table cellspacing="0" cellpadding="0">
 <tbody>
