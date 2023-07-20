@@ -120,6 +120,7 @@ to the following topic.
 
 <pre>zigbee2mqtt/irNational/set/Flap</pre>
 
+<img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n09.jpg" alt="" width="1024" height="428" class="alignnone size-full wp-image-2834" />
 
 # Prerequisite
 
