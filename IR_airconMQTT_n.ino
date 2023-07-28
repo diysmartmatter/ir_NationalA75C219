@@ -15,11 +15,11 @@ IRNational national=IRNational(kIrLed);
 uint8_t _CoolingThresholdTemperature = 26; //HK has specific temp-value for each mode 
 uint8_t _HeatingThresholdTemperature = 22; //HK has specific temp-value for each mode
 
-//DHT sensor
-//#include "DHT20.h"
-//#define GPIO_SDA 21 //I2C for DHT20
-//#define GPIO_SCL 22 //I2C for DHT20
-//DHT20 dht; //instance of DHT20
+DHT sensor
+#include "DHT20.h"
+#define GPIO_SDA 21 //I2C for DHT20
+#define GPIO_SCL 22 //I2C for DHT20
+DHT20 dht; //instance of DHT20
 
 //MQTT
 #include <EspMQTTClient.h>
@@ -35,11 +35,12 @@ const short MQTTPORT = 1883; //Broker port
 const char  MQTTUSER[] = "";//Can be omitted if not needed
 const char  MQTTPASS[] = "";//Can be omitted if not needed
 const char  SUBTOPIC[] = "zigbee2mqtt/irNational/set/#"; //mqtt topic to subscribe
-const char  PUBTOPIC[] = "zigbee2mqtt/irNational/get/Active"; //to publish temperature
+const char  PUBTOPICF[] = "zigbee2mqtt/irNational/get/Active"; //to publish flap state
+const char  PUBTOPICT[] = "zigbee2mqtt/irNational/get"; //to publish temperature
 const char  DEBUG[] = "zigbee2mqtt/irNational/debug"; //topic for debug
 
 void setup() {
-//  dht.begin(GPIO_SDA, GPIO_SCL); //DHT20]
+  dht.begin(GPIO_SDA, GPIO_SCL); //DHT20]
   national.begin();
   Serial.begin(115200);
   while (!Serial);      //  wait for serial port to connect.
@@ -93,11 +94,11 @@ void onMessageReceived(const String& topic, const String& message) {
     }
     else if(doc["contact"] == true) {
       national.updateState( false );
-      client->publish(PUBTOPIC,"false");
+      client->publish(PUBTOPICF,"false");
     }
     else if(doc["contact"] == false) {
       national.updateState( true );
-      client->publish(PUBTOPIC,"true");
+      client->publish(PUBTOPICF,"true");
     }
   }
 }
@@ -111,7 +112,6 @@ void onConnectionEstablished() {
   client->publish(DEBUG,"irNational started.");
 }
 
-/*
 //IR Remo and MQTT: read DHT20 and publish results
 //check every 10 sec.
 //if temp or humi change publish soon, otherwise publish every 5 min.
@@ -137,14 +137,13 @@ void publishDHT() {
     oldtemp=newtemp;
     oldhumi=newhumi;    
     sprintf(buff, "{\"temperature\":%.1f,\"humidity\":%.0f}", temp, humi);
-    client->publish(PUBTOPIC,buff);
+    client->publish(PUBTOPICT,buff);
     count10=0; //reset counter
   }
 }
-*/
 
 void loop() {
-  ArduinoOTA.handle();
-  client->loop(); 
-//  publishDHT(); //publish temp and humi if needed
+  ArduinoOTA.handle(); //loop for OTA
+  client->loop(); //loop for MQTT
+  publishDHT(); //publish temp and humi if needed
 }
