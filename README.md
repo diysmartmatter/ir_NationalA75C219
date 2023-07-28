@@ -120,12 +120,12 @@ to the following topic.
 
 <pre>zigbee2mqtt/irNational/set/Flap</pre>
 
-<img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n15.jpg" />
+<img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n26.jpg" />
 
 # Prerequisite
 
 
-<img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n06.jpg"/>
+<img src="https://diysmartmatter.com/wp-content/uploads/2022/12/n23.jpg"/>
 
 
 - Homebridge (running on Rasbperry Pi)
