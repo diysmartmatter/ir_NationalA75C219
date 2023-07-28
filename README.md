@@ -173,7 +173,7 @@ This is an example of Homebridge config for MQTTThing.
 },
 </pre>
 
-# How the program work
+# How the program works
 
 When HomeKit requests A/C operations, MQTT messages are published in several topics. The ESP32 progra subscribes them and send IR patterns. 
 
