@@ -21,40 +21,35 @@ void IRNational::begin(void) { _irsend.begin(); }
 /// Send the current internal state as an IR message.
 /// @param[in] repeat Nr. of times the message will be repeated.
 void IRNational::send() {
-  
-  uint8_t irdata[4];
-  // Section #1 
-  irdata[0]=_.raw[0];
-  irdata[1]=_.raw[0];
-  irdata[2]=_.raw[1];
-  irdata[3]=_.raw[1];
 
-  _irsend.sendGeneric(kNationalHeaderMark, kNationalHeaderSpace, kNationalBitMark,
-              kNationalOneSpace, kNationalBitMark, kNationalZeroSpace,
-              0, 0, &irdata[0], 4,
-              kNationalFreq, false, 0, 50);
-  _irsend.sendGeneric(kNationalHeaderMark, kNationalHeaderSpace, kNationalBitMark,
-              kNationalOneSpace, kNationalBitMark, kNationalZeroSpace,
-              kNationalFooterMark, kNationalFooterSpace, &irdata[0], 4,
-              kNationalFreq, false, 0, 50);
-
-  // Gap #1
+  // Data for gap
   const uint16_t gap[2]= { kNationalBitMark, kNationalBitMark *16};
+  // Data for section #1 
+  uint8_t irdata1[4]= {_.raw[0], _.raw[0], _.raw[1], _.raw[1]};
+  // Data for section #2
+  uint8_t irdata2[4]= {_.raw[2], _.raw[2], _.raw[3], _.raw[3]};
+
+  // Section #1 
+  _irsend.sendGeneric(kNationalHeaderMark, kNationalHeaderSpace, kNationalBitMark,
+              kNationalOneSpace, kNationalBitMark, kNationalZeroSpace,
+              0, 0, &irdata1[0], 4,
+              kNationalFreq, false, 0, 50);
+  _irsend.sendGeneric(kNationalHeaderMark, kNationalHeaderSpace, kNationalBitMark,
+              kNationalOneSpace, kNationalBitMark, kNationalZeroSpace,
+              kNationalFooterMark, kNationalFooterSpace, &irdata1[0], 4,
+              kNationalFreq, false, 0, 50);
+    
+  // Gap #1
   _irsend.sendRaw(gap, 2, kNationalFreq);
 
   // Section #2 
-  irdata[0]=_.raw[2];
-  irdata[1]=_.raw[2];
-  irdata[2]=_.raw[3];
-  irdata[3]=_.raw[3];
- 
   _irsend.sendGeneric(kNationalHeaderMark, kNationalHeaderSpace, kNationalBitMark,
               kNationalOneSpace, kNationalBitMark, kNationalZeroSpace,
-              0, 0, &irdata[0], 4,
+              0, 0, &irdata2[0], 4,
               kNationalFreq, false, 0, 50);
   _irsend.sendGeneric(kNationalHeaderMark, kNationalHeaderSpace, kNationalBitMark,
               kNationalOneSpace, kNationalBitMark, kNationalZeroSpace,
-              kNationalFooterMark, kNationalFooterSpace, &irdata[0], 4,
+              kNationalFooterMark, kNationalFooterSpace, &irdata2[0], 4,
               kNationalFreq, false, 0, 50);
 
   // Gap #2
