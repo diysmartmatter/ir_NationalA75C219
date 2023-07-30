@@ -181,8 +181,8 @@ When HomeKit requests A/C operations, MQTT messages are published in several top
 
 When the A/C flap opens or closed, the Zigbee contact sensor detects and Zigbee2MQTT server publishes a true or false message to set/Flap topic. The ESP32 that is subscribing the topic, publishes a false or true messaget to get/Active topic. This will switches the A/C on/off status in the HomeKit system.  
 
-<img src="https://diysmartmatter.com/wp-content/uploads/2023/07/n28.jpg" />
+<img src="https://diysmartmatter.com/wp-content/uploads/2023/07/n31.jpg" />
 
 The ESP32 monitor the temp/humi sensor (DHT20) in every 10 second, and it publishes the temp/humi value so that HomeKit updates the current temperature. In case temp/humi value is identical to the previous measurement in 10 second ago, ESP32 will not publishes, except when the measurement remains same for more than 5 min.  
 
-<img src="https://diysmartmatter.com/wp-content/uploads/2023/07/n29.jpg" />
+<img src="https://diysmartmatter.com/wp-content/uploads/2023/07/n30.jpg" />
