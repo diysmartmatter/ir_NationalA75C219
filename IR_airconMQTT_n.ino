@@ -34,10 +34,11 @@ const char  MQTTADD[] = "192.168.xxx.xxx"; //Broker IP address
 const short MQTTPORT = 1883; //Broker port
 const char  MQTTUSER[] = "";//Can be omitted if not needed
 const char  MQTTPASS[] = "";//Can be omitted if not needed
-const char  SUBTOPIC[] = "zigbee2mqtt/irNational/set/#"; //mqtt topic to subscribe
-const char  PUBTOPICF[] = "zigbee2mqtt/irNational/get/Active"; //to publish flap state
-const char  PUBTOPICT[] = "zigbee2mqtt/irNational/get"; //to publish temperature
-const char  DEBUG[] = "zigbee2mqtt/irNational/debug"; //topic for debug
+const char  SUBTOPICH[] = "mqttthing/irNational/set/#"; //to subscrive HomeKit
+const char  SUBTOPICF[] = "zigbee2mqtt/NationalFlap"; //to subscrive National AC Flap sensor
+const char  PUBTOPICF[] = "mqttthing/irNational/get/Active"; //to publish flap state
+const char  PUBTOPICT[] = "mqttthing/irNational/get"; //to publish temperature
+const char  DEBUG[] = "mqttthing/irNational/debug"; //topic for debug
 
 void setup() {
   dht.begin(GPIO_SDA, GPIO_SCL); //DHT20]
@@ -50,7 +51,9 @@ void setup() {
   delay(1000);
 }
 
-void onMessageReceived(const String& topic, const String& message) { 
+
+//message has received from HomeKit
+void onMessageReceivedH(const String& topic, const String& message) { 
   String command = topic.substring(topic.lastIndexOf("/") + 1);
 
   if (command.equals("Active")) {
@@ -87,30 +90,39 @@ void onMessageReceived(const String& topic, const String& message) {
     client->publish(DEBUG,"swing mode.");
     if(message.equalsIgnoreCase("DISABLED")) national.setSwing(false);
     if(message.equalsIgnoreCase("ENABLED")) national.setSwing(true);
-  }else if(command.equals("Flap")){ //message from Zigbee flap sensor
-    DeserializationError error = deserializeJson(doc, message);
-    if(error) {
-      client->publish(DEBUG,"JSON deserialization error."); 
-    }
-    else if(doc["contact"] == true) {
-      national.updateState( false );
-      client->publish(PUBTOPICF,"false");
-    }
-    else if(doc["contact"] == false) {
-      national.updateState( true );
-      client->publish(PUBTOPICF,"true");
-    }
   }
 }
+
+
+//message received from Z2MQTT (Flap sensor)
+void onMessageReceivedF(const String& topic, const String& message) { 
+  //message from Zigbee flap sensor
+  client->publish(DEBUG,message); 
+  DeserializationError error = deserializeJson(doc, message);
+  if(error) {
+    client->publish(DEBUG,"JSON deserialization error."); 
+  }
+  else if(doc["contact"] == true) {
+    national.updateState( false );
+    client->publish(PUBTOPICF,"false");
+  }
+  else if(doc["contact"] == false) {
+    national.updateState( true );
+    client->publish(PUBTOPICF,"true");
+  }
+}
+
 
 void onConnectionEstablished() {
   ArduinoOTA.setHostname("irNational");
   ArduinoOTA.setPasswordHash("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
   ArduinoOTA.begin();
   Serial.println("MQTT connection established.");
-  client->subscribe(SUBTOPIC, onMessageReceived); //set callback function
+  client->subscribe(SUBTOPICH, onMessageReceivedH); //set callback for HomeKit
+  client->subscribe(SUBTOPICF, onMessageReceivedF); //for Z2MQTT (Flap sensor)
   client->publish(DEBUG,"irNational started.");
 }
+
 
 //IR Remo and MQTT: read DHT20 and publish results
 //check every 10 sec.
