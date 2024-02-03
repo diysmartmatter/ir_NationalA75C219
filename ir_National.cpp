@@ -118,25 +118,26 @@ void IRNational::stateReset(void) {
   currentState=false; //set current power state to off
 }
 
-/// Change the power setting to On.
-void IRNational::on(void) { setPower(true); }
-
-/// Change the power setting to Off.
-void IRNational::off(void) { setPower(false); }
-
-/// Change the power setting.
-/// @param[in] on true, the setting is on. false, the setting is off.
-void IRNational::setPower(const bool on) {
-  if(on == currentState) {
-    _.Stay = 1; //do not toggle the power in the next irsend
-  } else {
-    _.Stay = 0; //toggle the power in the next irsend
+/// Update AC On/Off state and returns if it was updated or not
+/// Used when HomeKit On/Off the AC, or when it manually turned On/Off 
+/// @param[in] accuired power state by HomeKit or Zigbee contact sensor 
+/// @param[out] if the current state is changed
+bool IRNational::updateState(const bool newState) {
+  if(currentState == newState) {
+    return false;
+  }
+  else {
+    currentState = newState;
+    return true;
   }
 }
 
-/// The AC has been operated then update the actual power state
-/// @param[in] accuired power state by a Zigbee contact sensor 
-void IRNational::updateState(const bool newState) { currentState = newState; }
+/// Toggle the AC power 
+void IRNational::toggleOnOff() {
+  _.Stay = 0; //toggle OnOff in next send()
+  send(); //send IR and toggle power
+  _.Stay = 1; //do not toggle
+}
 
 /// Set the operating mode of the A/C.
 /// @param[in] desired_mode The desired operating mode.
