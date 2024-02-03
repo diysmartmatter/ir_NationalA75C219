@@ -54,10 +54,8 @@ class IRNational {
 
   void send(void);
   void begin(void);
-  void on(void);
-  void off(void);
-  void setPower(const bool state);
-  void updateState(const bool newState);
+  void toggleOnOff(void); //toggle the AC power
+  bool updateState(const bool newState); //update on/off state and returns if it is required
   void setTemp(const uint8_t temp);
   uint8_t getTemp(void) const;
   void setFan(const uint8_t fan);
