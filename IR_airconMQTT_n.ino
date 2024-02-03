@@ -17,8 +17,6 @@ uint8_t _HeatingThresholdTemperature = 22; //HK has specific temp-value for each
 
 DHT sensor
 #include "DHT20.h"
-#define GPIO_SDA 21 //I2C for DHT20
-#define GPIO_SCL 22 //I2C for DHT20
 DHT20 dht; //instance of DHT20
 
 //MQTT
@@ -41,7 +39,8 @@ const char  PUBTOPICT[] = "mqttthing/irNational/get"; //to publish temperature
 const char  DEBUG[] = "mqttthing/irNational/debug"; //topic for debug
 
 void setup() {
-  dht.begin(GPIO_SDA, GPIO_SCL); //DHT20]
+  Wire.begin();
+  dht.begin(); //DHT20
   national.begin();
   Serial.begin(115200);
   while (!Serial);      //  wait for serial port to connect.
@@ -57,10 +56,14 @@ void onMessageReceivedH(const String& topic, const String& message) {
   String command = topic.substring(topic.lastIndexOf("/") + 1);
 
   if (command.equals("Active")) {
-    if(message.equalsIgnoreCase("true")) national.on();
-    if(message.equalsIgnoreCase("false")) national.off();
+    bool newState=false; //default for JIC
+    if(message.equalsIgnoreCase("true")) newState=true;
+    if(message.equalsIgnoreCase("false")) newState=false;
+    if(national.updateState(newState)) { //if On/Off state is updated
+      national.toggleOnOff();
+    }
     client->publish(DEBUG,national.toChars());
-    national.send();
+    //national.send() is not required, because toggleOnOff() sends IR signal
   }else if(command.equals("TargetHeaterCoolerState")){
     if(message.equalsIgnoreCase("COOL")) {
       national.setTemp(_CoolingThresholdTemperature);//each mode has specific temp
@@ -70,6 +73,7 @@ void onMessageReceivedH(const String& topic, const String& message) {
       national.setTemp(_HeatingThresholdTemperature);//each mode has specific temp
       national.setMode(kNationalHeat);
     }
+    //national.send() is not required, because HomeKit sends "Active" msg
   }else if(command.equals("CoolingThresholdTemperature")){
     national.setTemp(message.toInt());
     _CoolingThresholdTemperature=national.getTemp(); //may be capped
@@ -86,10 +90,17 @@ void onMessageReceivedH(const String& topic, const String& message) {
     else if(speed < 50) national.setFan(kNationalFan1); //level-1
     else if(speed < 75) national.setFan(kNationalFan2); //level-2
     else                national.setFan(kNationalFan3); //level-3
+    national.send();
   }else if(command.equals("SwingMode")){
     client->publish(DEBUG,"swing mode.");
     if(message.equalsIgnoreCase("DISABLED")) national.setSwing(false);
     if(message.equalsIgnoreCase("ENABLED")) national.setSwing(true);
+    //national.send() is not required here, because setSwing() sends IR signal
+  }else if(command.equals("restart") && message.equalsIgnoreCase("TRUE"))  
+  { //reset ESP32 for debug
+    client->publish(DEBUG,"Restarting ESP32..."); delay(500);
+    //mainly used to retly mDNS and ArduinoOTA connection.
+    ESP.restart();
   }
 }
 
